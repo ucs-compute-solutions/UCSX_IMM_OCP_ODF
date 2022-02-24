@@ -1,0 +1,42 @@
+---
+################################################################################
+#
+# Title:        copy_ceph_files.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Copy Ceph configuration files to Ceph admin node
+#
+# Variables:
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Copy Ceph all.yml
+- name: Copy Ceph all.yml file
+  copy:
+    src: files/all.yml
+    dest: /usr/share/ceph-ansible/group_vars/all.yml
+    mode: '0644'
+  delegate_to: localhost
+  run_once: true
+
+# Copy Ceph osds.yml
+- name: Copy Ceph osds.yml file
+  copy:
+    src: files/osds.yml
+    dest: /usr/share/ceph-ansible/group_vars/osds.yml
+    mode: '0644'
+  delegate_to: localhost
+  run_once: true
+
+# Copy Ceph site-container.yml
+- name: Copy Ceph site-container.yml file
+  copy:
+    src: files/site-container.yml
+    dest: /usr/share/ceph-ansible/site-container.yml
+    mode: '0644'
+  delegate_to: localhost
+  run_once: true

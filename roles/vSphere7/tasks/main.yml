@@ -1,0 +1,75 @@
+---
+################################################################################
+#
+# Title:        main.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+#
+# Description:  Role for configuring vCenter and vSphere Nodes for OCP
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+# Create Datacenter object in vCenter
+- include: create_dc.yml
+
+# Cluster creation for the provisioned hosts including setting up HA/DRS
+- include: create_cluster.yml
+  run_once: true
+
+# Create DVS within vCenter
+- include: create_dvs.yml
+  run_once: true
+
+# Create DVS Portgroups
+- include: create_dvs_pg.yml
+
+# Add the NTP Server(s) to the ESXi Hosts
+- include: add_esxi_ntp.yml
+
+# Set ESXi Power Management Policy to High-Performance
+- include: set_esxi_powermgmt_policy.yml
+
+# Add ESXi Host to vCenter
+- include: add_esxi_hosts_to_VC.yml
+
+# Add vSwitch OCP to ESXi Host
+- include: add_esxi_vswitch_ocp.yml
+
+# Add vSwitch NetApp to ESXi Host
+- include: add_esxi_vswitch_netapp.yml
+
+# Add VMK OCP to ESXi Host
+- include: add_esxi_vmk_ocp.yml
+  loop_control:
+    label: "{{ item.esxi_name }}"
+  loop: "{{ vmk_ocp_list }}"
+  when: vmk_ocp_list is defined
+  run_once: true
+
+# Add VMK NetApp to ESXi Host
+- include: add_esxi_vmk_netapp.yml
+  loop_control:
+    label: "{{ item.esxi_name }}"
+  loop: "{{ vmk_netapp_list }}"
+  when: vmk_netapp_list is defined
+  run_once: true
+
+# Add the ESXi hosts to VDS
+- include: add_esxi_hosts_to_dvs.yml
+
+# Create DVS VMK
+- include: add_esxi_dvs_vmk.yml
+  loop_control:
+    label: "{{ item.esxi_name }}"
+  loop: "{{ dvs_vmk_list }}"
+  when: dvs_vmk_list is defined
+  run_once: true
+  throttle: 1
+
+# Add NFS Datastore
+- include: add_esxi_nfs_datastore.yml
+
+# Update ESXi Network Driver
+#- include: update_esxi.yml

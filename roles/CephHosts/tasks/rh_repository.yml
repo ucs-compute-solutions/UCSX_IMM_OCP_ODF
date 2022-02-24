@@ -1,0 +1,46 @@
+---
+################################################################################
+#
+# Title:        rh_repository.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Enable RHEL Repositories
+#
+# Variables:    base_os = Base RHEL 8 repository
+#               appstream = Appstream RHEL 8 repository
+#               ceph_tools = Ceph tool repository for Ceph admin node
+#               ansible_ceph = Ceph Ansible repository for admin node
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Disable all Repositories
+- name: Disable Repositories
+  community.general.rhsm_repository:
+    name: '*'
+    state: disabled
+  when: "'Ceph_Hosts' in group_names"
+  throttle: 1
+
+# Enable only RHEL 8 repositories on all nodes
+- name: Enable RHEL 8 OS Repositories
+  community.general.rhsm_repository:
+    name:
+      - "{{ base_os }}"
+      - "{{ appstream }}"
+    state: enabled
+  when: "'Ceph_Hosts' in group_names"
+  throttle: 1
+
+# Enable Ceph Repository on admin node
+- name: Enable Ceph Repositories on Admin Node
+  community.general.rhsm_repository:
+    name:
+      - "{{ ceph_tools }}"
+      - "{{ ansible_ceph }}"
+    state: enabled
+  when: "'Ceph_Deploy' in group_names"
+  throttle: 1

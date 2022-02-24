@@ -1,0 +1,24 @@
+---
+################################################################################
+#
+# Title:        sshkey_ceph_user.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Create ssh key for Ceph User Admin
+#
+# Variables:    ansible_admin_user = Ansible user
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Create SSH key for user admin
+- name: Generate SSH key for user admin
+  become: true
+  become_user: "{{ ansible_admin_user }}"
+  shell: echo -e 'y\n' | ssh-keygen -t rsa -b 2048 -N '' -f {{ RSAFIL }}
+  delegate_to: localhost
+  run_once: true
+  when: "'Ceph_Hosts' in group_names"

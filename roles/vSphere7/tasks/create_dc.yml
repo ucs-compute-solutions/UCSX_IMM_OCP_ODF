@@ -1,0 +1,29 @@
+---
+################################################################################
+#
+# Title:        create_dc.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-09
+# Description:  Create Datacenter under vCenter
+#
+# Variables:    vcenter_hostname = FQDN or IP of vCenter
+#               vcenter_username = vCenter username
+#               vcenter_password = vCenter password
+#               vcenter_dc = vCenter datacenter name
+#               vcenter_cluster = vCenter cluster name
+#
+# Modules:      vmware_datacenter
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: vCenter Datacenter creation
+  community.vmware.vmware_datacenter:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter_name: "{{ vcenter_dc }}"
+    state: present
+  run_once: true

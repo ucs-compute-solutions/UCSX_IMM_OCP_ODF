@@ -1,0 +1,24 @@
+---
+################################################################################
+#
+# Title:        copy_hosts_file.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Copy Ceph hosts file to Ceph admin node
+#
+# Variables:
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Copy Ceph hosts file
+- name: Copy admin Config file
+  copy:
+    src: files/hosts
+    dest: /usr/share/ceph-ansible
+    mode: '0644'
+  delegate_to: localhost
+  run_once: true

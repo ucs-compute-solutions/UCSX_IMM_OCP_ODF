@@ -1,0 +1,53 @@
+---
+################################################################################
+#
+# Title:        eth_network_control.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+# Description:  Configure Ethernet Network Policy in Intersight
+#
+# Variables:    eth_network_control_name = Name of Network Control Policy
+#               eth_network_control_cdp = CDP Enable/Disable
+#               eth_network_control_forge_mac = MAC Security
+#               eth_network_control_lldp_rec = LLDP Receive
+#               eth_network_control_lldp_tra = LLDP Transmit
+#               eth_network_control_mac_reg = MAC Register Mode
+#               eth_network_control_uplink_fail = Action on failed uplink
+#
+# Modules:      fabric/EthNetworkControlPolicies
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/cisco/intersight/index.html
+#
+################################################################################
+
+- name: "Configure Ethernet Network Control Policy"
+  vars:
+    api_info: &api_info
+      api_private_key: "{{ api_private_key }}"
+      api_key_id: "{{ api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /fabric/EthNetworkControlPolicies
+    query_params:
+      $filter: "Name eq '{{ eth_network_control_name }}'"
+    api_body: {
+      "Name": "{{ eth_network_control_name }}",
+      "CdpEnabled": "{{ eth_network_control_cdp }}",
+      "ForgeMac": "{{ eth_network_control_forge_mac }}",
+      "LldpSettings": {
+        "ReceiveEnabled": "{{ eth_network_control_lldp_rec }}",
+        "TransmitEnabled": "{{ eth_network_control_lldp_tra }}"
+      },
+      "MacRegistrationMode": "{{ eth_network_control_mac_reg }}",
+      "UplinkFailAction": "{{ eth_network_control_uplink_fail }}",
+      "Organization": {
+        "Moid": "{{ org_resp.api_response.Moid }}"
+      }
+    }
+  tags: domain_fabric
+  register: eth_network_control_resp
+  run_once: true
+  delegate_to: localhost

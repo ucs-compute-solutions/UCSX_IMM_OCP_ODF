@@ -1,0 +1,59 @@
+---
+################################################################################
+#
+# Title:        gather_facts.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+# Description:  Gather MAC, IMC, and UUID MOID and delete server temp file
+#
+# Modules:      macpool/Pools
+#               access/Policies
+#               uuidpool/Pools
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/cisco/intersight/index.html
+#
+################################################################################
+
+- name: Gather MAC Pool Moid
+  vars:
+    api_info: &api_info
+      api_private_key: "{{ api_private_key }}"
+      api_key_id: "{{ api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /macpool/Pools
+    query_params:
+      $filter: "Name eq '{{ mac_pool_name }}'"
+  register: mac
+  run_once: true
+  no_log: true
+
+- name: Gather IMC Access Moid
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /access/Policies
+    query_params:
+      $filter: "Name eq '{{ imc_access_name }}'"
+  register: imc
+  run_once: true
+  no_log: true
+
+- name: Gather UUID Pool Moid
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /uuidpool/Pools
+    query_params:
+      $filter: "Name eq '{{ uuid_pool_name }}'"
+  register: uuid
+  run_once: true
+  no_log: true
+
+- name: Delete existing variable file
+  file:
+    path: "{{ filepath_server }}"
+    state: absent
+  run_once: true
+  no_log: true

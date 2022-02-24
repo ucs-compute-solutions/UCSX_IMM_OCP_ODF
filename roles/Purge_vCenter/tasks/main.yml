@@ -1,0 +1,63 @@
+---
+- name: Remove vMotion VMKernel
+  community.vmware.vmware_vmkernel:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    dvswitch_name: '{{ dvs_name }}'
+    device: vmk2
+    portgroup_name: '{{ dvs_vmk_list[0]["portgroup_vmotion"] }}'
+    state: absent
+  delegate_to: localhost
+  throttle: 1
+
+- name: Remove host from vDS '{{ dvs_name }}'
+  community.vmware.vmware_dvs_host:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    switch_name: '{{ dvs_name }}'
+    state: absent
+  delegate_to: localhost
+  throttle: 1
+
+- name: Remove vCenter vDS
+  community.vmware.vmware_dvswitch:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter_name: "{{ vcenter_dc }}"
+    switch_name: "{{ dvs_name }}"
+    version: "{{ dvs_version }}"
+    mtu: "{{ dvs_mtu }}"
+    uplink_quantity: "{{ dvs_uplink }}"
+    discovery_protocol: "{{ dvs_protocol }}"
+    discovery_operation: "{{ dvs_operation }}"
+    state: absent
+
+- name: Remove VMware Cluster
+  community.vmware.vmware_cluster:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: no
+    datacenter_name: '{{ vcenter_dc }}'
+    enable_ha: true
+    enable_drs: true
+    state: absent
+    cluster_name: '{{ vcenter_cluster }}'
+
+- name: Remove vCenter Datacenter
+  community.vmware.vmware_datacenter:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter_name: "{{ vcenter_dc }}"
+    state: absent
+  run_once: true

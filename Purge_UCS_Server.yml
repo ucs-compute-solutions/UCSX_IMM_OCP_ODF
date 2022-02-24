@@ -1,0 +1,23 @@
+---
+################################################################################
+#
+# Title:        Purge_UCS_Server.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+#
+# Description:  Playbook for purging UCS X210c M6 Blades in Intersight
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/cisco/intersight/index.html
+#
+################################################################################
+
+- name: Purge UCS X-Series Chassis
+  hosts: Intersight_Blades
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  connection: local
+  collections:
+    - cisco.intersight
+  gather_facts: false
+  roles:
+    - role: Purge_UCSserver

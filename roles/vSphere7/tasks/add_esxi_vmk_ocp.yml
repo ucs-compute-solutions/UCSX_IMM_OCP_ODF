@@ -1,0 +1,55 @@
+---
+################################################################################
+#
+# Title:        add_esxi_vmk_ocp.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-10
+# Description:  Create Portgroup for OCP Traffic
+#
+# Variables:    vcenter_hostname = FQDN or IP of vCenter
+#               vcenter_username = vCenter username
+#               vcenter_password = vCenter password
+#               vswitch_ocp = Name of vSwitch
+#               vswitch_port_ocp = Portgroup for vSwitch OCP
+#               vswicth_netmask = Netmask for vSwitch
+#               vSwitch_stack = Network stack to be used
+#               vmk_ocp_list = List of vmk IPs
+#
+# Modules:      vmware_portgroup
+#               vmware_vmkernel
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: Create OCP Portgroup
+  community.vmware.vmware_portgroup:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    switch: '{{ vswitch_ocp }}'
+    portgroup: '{{ vswitch_port_ocp }}'
+  delegate_to: localhost
+  throttle: 1
+
+- name: Create OCP VMKernel
+  community.vmware.vmware_vmkernel:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    vswitch_name: '{{ vswitch_ocp }}'
+    portgroup_name: '{{ vswitch_port_ocp }}'
+    # MTU value is hardcoded to 9000 for better performance
+    mtu: 9000
+    network:
+      type: 'static'
+      ip_address: '{{ item.vswitch_ocp_ip }}'
+      subnet_mask: '{{ vswitch_netmask }}'
+      tcpip_stack: '{{ vswitch_stack }}'
+    state: present
+  delegate_to: localhost
+  throttle: 1

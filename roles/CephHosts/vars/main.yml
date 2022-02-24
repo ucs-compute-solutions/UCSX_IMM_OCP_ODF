@@ -1,0 +1,7 @@
+# Dependent directory and files
+SSHDIR: ~/.ssh
+RSAFIL: "{{ SSHDIR }}/id_rsa"
+RSAPUB: "{{ SSHDIR }}/id_rsa.pub"
+RSATMP: "{{ local_temp}}/id_rsa_all.pub"
+SSHadminDIR: "/home/{{ ansible_admin_user }}/.ssh"
+RSAadminPUB: "{{ SSHadminDIR }}/id_rsa.pub"

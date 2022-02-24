@@ -1,0 +1,44 @@
+################################################################################
+#
+# Title:        lan_connectivity_policy.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+# Description:  Configure LAN Connectivity Policy in Intersight
+#
+# Variables:    lan_connnect_policy_name = Name of LAN connectivity policy
+#
+# Modules:      vnic/LanConnectivityPolicies
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/cisco/intersight/index.html
+#
+################################################################################
+
+- name: "Configure LAN Connectivity Policy for Ceph"
+  vars:
+    api_info: &api_info
+      api_private_key: "{{ api_private_key }}"
+      api_key_id: "{{ api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /vnic/LanConnectivityPolicies
+    query_params:
+      $filter: "Name eq '{{ item.name }}'"
+    api_body: {
+      "Name": "{{ item.name }}",
+      "Organization": {
+        "Moid": "{{ org_resp.api_response.Moid }}"
+      },
+      "TargetPlatform": "FIAttached"
+    }
+
+  loop_control:
+    label: "{{ item.name }}"
+  loop: "{{ lan_connectivity_list }}"
+  when: lan_connectivity_list is defined
+  register: lan_connectivity_resp
+  tags: network
+  run_once: true
+  delegate_to: localhost

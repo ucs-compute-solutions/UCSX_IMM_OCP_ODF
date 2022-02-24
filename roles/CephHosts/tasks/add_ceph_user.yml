@@ -1,0 +1,23 @@
+---
+################################################################################
+#
+# Title:        add_ceph_user.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Create Ceph Ansible User
+#
+# Variables:    ansible_admin_user = Ansible user
+#               ansible_admin_passwd = Password of Ansible user
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Add User for Ansible
+- name: Create Ansible user
+  user:
+    name: "{{ ansible_admin_user }}"
+    password: "{{ ansible_admin_passwd }}"
+  when: "'Ceph_Hosts' in group_names"

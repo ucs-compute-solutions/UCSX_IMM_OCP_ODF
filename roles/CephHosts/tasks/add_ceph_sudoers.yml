@@ -1,0 +1,26 @@
+---
+################################################################################
+#
+# Title:        add_ceph_sudoers.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Add User Admin to sudoers
+#
+# Variables:    ansible_admin_user = Ansible user
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Add user admin to sudoers
+- name: Add Ansible user {{ ansible_admin_user }} to sudo
+  lineinfile:
+    path: /etc/sudoers.d/{{ ansible_admin_user }}
+    line: '{{ ansible_admin_user }} ALL=(ALL) NOPASSWD: ALL'
+    state: present
+    mode: 0440
+    create: yes
+    validate: 'visudo -cf %s'
+  when: "'Ceph_Hosts' in group_names"

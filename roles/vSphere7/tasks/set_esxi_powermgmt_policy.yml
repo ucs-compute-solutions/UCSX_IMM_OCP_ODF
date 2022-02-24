@@ -1,0 +1,27 @@
+---
+################################################################################
+#
+# Title:        set_esxi_powermgmt_policy.yml
+# Author:       Olli Walsdorf
+# Date:         2021-11-28
+# Description:  Set ESXi Power Management Policy to High-Performance
+#
+# Variables:    inventory_hostname = Host name of the ESXi server
+#               esxi_username = ESXi username
+#               esxi_password = ESXi password
+#
+# Modules:      vmware_host_powermgmt_policy
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: Set ESXi Power Management Policy to High-Performance
+  community.vmware.vmware_host_powermgmt_policy:
+    hostname: '{{ inventory_hostname }}'
+    username: '{{ esxi_username }}'
+    password: '{{ esxi_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    policy: high-performance
+  delegate_to: localhost

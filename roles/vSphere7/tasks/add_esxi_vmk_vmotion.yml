@@ -1,0 +1,46 @@
+---
+################################################################################
+#
+# Title:        add_esxi_vmotion_vmk.yml
+# Author:       Olli Walsdorf
+# Date:         2021-11-28
+# Description:  Add NFS Datastore to each ESXi host
+#
+# Variables:
+#
+#
+#
+# Modules:      vmware_datacenter
+#
+# URLs:         https://galaxy.ansible.com/community/vmware
+#
+# Built-in help:
+# ansible-doc
+#
+################################################################################
+#
+#- hosts: localhost
+#  connection: local
+#  collections:
+#  - community.vmware
+#  gather_facts: false
+#  tasks:
+
+- name: Create vMotion VMKernel
+  community.vmware.vmware_vmkernel:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    dvswitch_name: '{{ dvs_name }}'
+    portgroup_name: '{{ vmotion_portgroup }}'
+    # MTU value is hardcoded to 9000 for better performance
+    mtu: 9000
+    network:
+      type: 'static'
+      ip_address: '{{ vmotion_ip }}'
+      subnet_mask: '{{ vmotion_mask }}'
+      tcpip_stack: vmotion
+    state: present
+  delegate_to: localhost

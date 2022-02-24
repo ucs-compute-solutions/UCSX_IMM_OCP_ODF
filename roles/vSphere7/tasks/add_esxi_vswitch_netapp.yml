@@ -1,0 +1,34 @@
+---
+################################################################################
+#
+# Title:        add_esxi_vswitch_netapp.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-10
+# Description:  Add vSwitch for NetApp Traffic
+#
+# Variables:    inventory_hostname = Host name of the ESXi server
+#               esxi_username = ESXi username
+#               esxi_password = ESXi password
+#               netapp_vmnic1 = vmnic to be used
+#               netapp_vmnic2 = vmnic to be used
+#
+# Modules:      vmware_vswitch
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: Add vSwitch for NettApp NFS Traffic
+  community.vmware.vmware_vswitch:
+    hostname: '{{ inventory_hostname }}'
+    username: '{{ esxi_username }}'
+    password: '{{ esxi_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    switch: "vSwitch2"
+    nics:
+    - '{{ netapp_vmnic1 }}'
+    - '{{ netapp_vmnic2 }}'
+    mtu: 9000
+  delegate_to: localhost
+  throttle: 1

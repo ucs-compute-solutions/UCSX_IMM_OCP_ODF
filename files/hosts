@@ -1,0 +1,21 @@
+################################################################################
+#
+# Title:        hosts
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+#
+# Description:  Example hosts file for RHCS 4
+#
+################################################################################
+
+[grafana-server]
+cephadm
+
+[mons]
+cephosd[1:3]
+
+[mgrs]
+cephosd[1:3]
+
+[osds]
+cephosd[1:4]
