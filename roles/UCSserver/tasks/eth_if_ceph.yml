@@ -1,0 +1,74 @@
+---
+################################################################################
+#
+# Title:        eth_if_ceph.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+# Description:  Configure Ethernet vNIC Interface for Ceph Blades
+#
+# Variables:    ceph_vnic_list = List of Ceph vNICs to create
+#
+# Modules:      vnic/EthIfs
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/cisco/intersight/index.html
+#
+################################################################################
+
+- name: Gather Ethernet Network VLAN Moid for Ceph
+  vars:
+    api_info: &api_info
+      api_private_key: "{{ api_private_key }}"
+      api_key_id: "{{ api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /fabric/EthNetworkGroupPolicies
+    query_params:
+      $filter: "Name eq '{{ item.vlan }}'"
+  register: vlan_ceph
+
+- name: "Configure Ethernet vNIC Interfaces for Ceph"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /vnic/EthIfs
+    query_params:
+      $filter: "Name eq '{{ item.name }}'"
+    api_body: {
+      "Name": "{{ item.name }}",
+      "Cdn": {
+        "Source": "vnic",
+      },
+      "FailoverEnabled": true,
+      "MacPool": {
+        "Moid": "{{ mac.api_response.Moid }}"
+      },
+      "Placement": {
+        "Id": "{{ item.placement_id }}",
+        "Uplink": "{{ item.placement_uplink }}",
+        "PciLink": "{{ item.placement_pcilink }}",
+        "SwitchId": "{{ item.switchid }}"
+      },
+      "Order": "{{ item.order }}",
+      "EthAdapterPolicy": {
+        "Moid": "{{ vnic_adapter_resp.results.0.api_response.Moid }}"
+      },
+      "EthQosPolicy": {
+        "Moid": "{{ eth_qos_resp.results.1.api_response.Moid }}"
+      },
+      "FabricEthNetworkControlPolicy": {
+        "Moid": "{{ eth_network_control_resp.api_response.Moid }}",
+      },
+      "FabricEthNetworkGroupPolicy": [
+        {
+          "Moid": "{{ vlan_ceph.api_response.Moid }}",
+        }
+      ],
+      "LanConnectivityPolicy": {
+        "Moid": "{{ lan_connectivity_resp.results.0.api_response.Moid }}"
+      }
+    }
+#  register: ceph_vnic_resp
+  tags: lan_connectivity
+  delegate_to: localhost

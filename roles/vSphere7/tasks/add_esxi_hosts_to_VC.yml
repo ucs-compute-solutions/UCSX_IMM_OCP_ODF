@@ -1,0 +1,38 @@
+---
+################################################################################
+#
+# Title:        add_esxi_hosts_to_VC.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-10
+# Description:  Add ESXi Hosts to vCenter Cluster
+#
+# Variables:    vcenter_hostname = FQDN or IP of vCenter
+#               vcenter_username = vCenter username
+#               vcenter_password = vCenter password
+#               vcenter_dc = vCenter datacenter name
+#               vcenter_cluster = vCenter cluster name
+#               inventory_hostname = Host name of the ESXi server
+#               esxi_username = ESXi username
+#               esxi_password = ESXi password
+#
+# Modules:      vmware_host
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: Add ESXi Hosts to vCenter
+  community.vmware.vmware_host:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    datacenter: '{{ vcenter_dc }}'
+    cluster: '{{ vcenter_cluster }}'
+    esxi_hostname: '{{ inventory_hostname }}'
+    esxi_username: '{{ esxi_username }}'
+    esxi_password: '{{ esxi_password }}'
+    fetch_ssl_thumbprint: yes
+    validate_certs: no
+    state: present
+  delegate_to: localhost
+  throttle: 1

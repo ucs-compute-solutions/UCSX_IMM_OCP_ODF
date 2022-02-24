@@ -1,0 +1,91 @@
+---
+- set_fact: Get Login
+  vars:
+    api_info: &api_info
+      api_private_key: "{{ api_private_key }}"
+      api_key_id: "{{ api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  run_once: true
+
+- name: Gather Chassis Profile Name
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /chassis/Profiles
+    query_params:
+      $filter: "Name eq 'CP-{{ inventory_hostname }}'"
+  register: chassis_profile
+  when:
+    - "'Intersight_Chassis' in group_names"
+
+- name: "Unassign Chassis Profile"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /chassis/Profiles
+    query_params:
+      $filter: "Name eq 'CP-{{ inventory_hostname }}'"
+    api_body: {
+      "Action": "Unassign"
+    }
+  when:
+    - "'Intersight_Chassis' in group_names"
+
+- name: Wait for Unassignment
+  pause:
+    minutes: 1
+
+- name: "Remove Chassis Profile"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /chassis/Profiles
+    query_params:
+      $filter: "Name eq 'CP-{{ inventory_hostname }}'"
+    state: absent
+  when:
+    - "'Intersight_Chassis' in group_names"
+
+- name: Delete MAC Pool
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /macpool/Pools
+    query_params:
+      $filter: "Name eq '{{ mac_pool_name }}'"
+    state: absent
+  run_once: true
+
+- name: Delete Power Policy
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /power/Policies
+    query_params:
+      $filter: "Name eq '{{ power_policy_name }}'"
+    state: absent
+  run_once: true
+
+- name: Delete IMC Access
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /access/Policies
+    query_params:
+      $filter: "Name eq '{{ imc_access_name }}'"
+    state: absent
+  run_once: true
+
+- name: Delete IP Pool
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /ippool/Pools
+    query_params:
+      $filter: "Name eq '{{ ip_pool_name }}'"
+    state: absent
+  run_once: true
+
+- name: Delete UUID Pool
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /uuidpool/Pools
+    query_params:
+      $filter: "Name eq '{{ uuid_pool_name }}'"
+    state: absent
+  run_once: true

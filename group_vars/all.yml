@@ -1,0 +1,414 @@
+# This file defines the variables which are common across the entire lab.
+#
+###############################################################################
+#
+# Global Parameters used by all hardware and software components in the lab
+#
+#
+# ------------------------------------------------------------------------------
+# Organization
+ucs_org: "AA16"
+
+# Configure UCS Chassis
+configure_ucs_chassis: 'true'
+
+# Configure UCS VMware
+configure_ucs_vmware: 'true'
+
+# Configure UCS Ceph
+configure_ucs_ceph: 'true'
+
+# Configure UCS OCP
+configure_ucs_ocp: 'true'
+
+# ------------------------------------------------------------------------------
+###############################################################################
+#
+# UCS | UCS | UCS | UCS | UCS | UCS | UCS | UCS | UCS | UCS | UCS | UCS | UCS
+#
+###############################################################################
+
+# Chassis Configuration - UUID Pool
+uuid_pool_name: 'OCP_Ceph_UUID'
+uuid_prefix: '10101010-1010-1010'
+uuid_size: 50
+uuid_from: '1010-101010101010'
+
+# Chassis Configuration - MAC Pool
+mac_pool_name: 'OCP_Ceph_MAC'
+mac_pool_block_from: '00:25:B5:10:00:00'
+mac_pool_block_size: 50
+
+# Chassis Configuration - IP Pool
+ip_pool_name: 'OCP_Ceph_IP'
+ip_pool_block_from: '10.81.72.211'
+ip_pool_block_size: 10
+ip_pool_config_gateway: '10.81.72.254'
+ip_pool_config_netmask: '255.255.255.0'
+ip_pool_config_dns1: '10.81.72.40'
+ip_pool_config_dns2: '10.81.72.41'
+
+# Chassis Configuration - IMC Access
+imc_access_name: 'OCP_Ceph_IMC'
+imc_access_vlan: 3072
+
+# Chassis Configuration - Power Policy
+power_policy_name: 'OCP_Ceph_Power'
+power_policy_profiling: 'Enabled'
+power_policy_restore: 'AlwaysOff'
+power_policy_redundancy: 'NotRedundant'
+power_policy_allocation: 0
+
+# NTP Server
+ntp_servers: '10.81.72.18'
+
+# Server Configuration - Ethernet QoS Policy
+qos_policy_list:
+  - name: 'OCP_QoS_1500'
+    mtu: 1500
+  - name: 'OCP_QoS_9000'
+    mtu: 9000
+
+# Server Configuration - Ethernet Adapter Policy
+eth_adapter_config_name: 'OCP_Eth_Adapter'
+eth_adapter_config_slot: 'MLOM'
+eth_adapter_config_fec_mode: 'cl91'
+
+# Server Configuration - Ethernet Network Control Policy
+eth_network_control_name: 'OCP_Eth_Control'
+eth_network_control_cdp: true
+eth_network_control_forge_mac: 'allow'
+eth_network_control_lldp_rec: false
+eth_network_control_lldp_tra: false
+eth_network_control_mac_reg: 'nativeVlanOnly'
+eth_network_control_uplink_fail: 'linkDown'
+
+# Server Configuration - Ethernet Network Policy
+eth_network_group_list:
+  - name: 'Management'
+    vlan_number_allowed: '16'
+    vlan_number_native: 16
+  - name: 'OCP_Ceph'
+    vlan_number_allowed: '172'
+    vlan_number_native: 172
+  - name: 'Ceph_Storage'
+    vlan_number_allowed: '202'
+    vlan_number_native: 202
+  - name: 'VMware_NetApp'
+    vlan_number_allowed: '3000'
+    vlan_number_native: 3000
+  - name: 'VMware_vMotion'
+    vlan_number_allowed: '3030'
+    vlan_number_native: 3030
+
+# Server Configuration - vNIC Adapter Policy
+vnic_adapter_list:
+  - name: 'OCP_Ceph_Adapter'
+    txqueue: 1
+    txring: 4096
+    rxqueue: 8
+    rxring: 4096
+    compqueue: 9
+    interrupt: 11
+    large_receive: true
+    large_send: true
+    rss: true
+  - name: 'VMware_Adapter'
+    txqueue: 1
+    txring: 4096
+    rxqueue: 1
+    rxring: 256
+    compqueue: 2
+    interrupt: 4
+    large_receive: true
+    large_send: true
+    rss: false
+
+# Server Configuration - Storage Policy
+storage_policy_name: 'OCP_Boot_Storage'
+storage_controller_slot: 'MSTOR-RAID-1,MSTOR-RAID-2'
+unused_disk_state: 'Jbod'
+
+# Server Configuration - Boot Policy
+boot_policy_name: 'OCP_Boot'
+vd_name: 'M2_Boot'
+vmedia_name: 'CIMC_vMedia'
+
+# Server Configuration - vMedia Policy
+vmedia_ceph_list:
+  - name: 'OCP_Ceph1'
+    vmedia_volume_name: 'RHEL_84'
+    vmedia_mount_proto: 'https'
+    vmedia_file_name: 'http://10.81.72.229/rhel-boot/rhel-8.4-x86_64-boot-cephosd1.iso'
+    vmedia_device: 'cdd'
+    vmedia_server: 'AA16-6454-1-3'
+  - name: 'OCP_Ceph2'
+    vmedia_volume_name: 'RHEL_84'
+    vmedia_mount_proto: 'https'
+    vmedia_file_name: 'http://10.81.72.229/rhel-boot/rhel-8.4-x86_64-boot-cephosd2.iso'
+    vmedia_device: 'cdd'
+    vmedia_server: 'AA16-6454-1-4'
+  - name: 'OCP_Ceph3'
+    vmedia_volume_name: 'RHEL_84'
+    vmedia_mount_proto: 'https'
+    vmedia_file_name: 'http://10.81.72.229/rhel-boot/rhel-8.4-x86_64-boot-cephosd3.iso'
+    vmedia_device: 'cdd'
+    vmedia_server: 'AA16-6454-1-7'
+  - name: 'OCP_Ceph4'
+    vmedia_volume_name: 'RHEL_84'
+    vmedia_mount_proto: 'https'
+    vmedia_file_name: 'http://10.81.72.229/rhel-boot/rhel-8.4-x86_64-boot-cephosd4.iso'
+    vmedia_device: 'cdd'
+    vmedia_server: 'AA16-6454-1-8'
+vmedia_ocp_list:
+  - name: 'VMware1'
+    vmedia_volume_name: 'ESXi_7_0'
+    vmedia_mount_proto: 'https'
+    vmedia_file_name: 'http://10.81.72.229/vmware/vmware7_ocpesxi1.iso'
+    vmedia_device: 'cdd'
+    vmedia_server: 'AA16-6454-1-1'
+  - name: 'VMware2'
+    vmedia_volume_name: 'ESXi_7_0'
+    vmedia_mount_proto: 'https'
+    vmedia_file_name: 'http://10.81.72.229/vmware/vmware7_ocpesxi2.iso'
+    vmedia_device: 'cdd'
+    vmedia_server: 'AA16-6454-1-2'
+  - name: 'VMware3'
+    vmedia_volume_name: 'ESXi_7_0'
+    vmedia_mount_proto: 'https'
+    vmedia_file_name: 'http://10.81.72.229/vmware/vmware7_ocpesxi3.iso'
+    vmedia_device: 'cdd'
+    vmedia_server: 'AA16-6454-1-5'
+
+# Server Configuration - LAN Connectivity Policy
+lan_connectivity_list:
+  - name: 'Ceph_LAN'
+  - name: 'VMware_LAN'
+
+# Server Configuration - vNIC Ceph
+ceph_vnic_list:
+  - name: 'eth0'
+    placement_id: 'MLOM'
+    placement_uplink: 0
+    placement_pcilink: 0
+    switchid: 'A'
+    order: 0
+    vlan: 'Management'
+  - name: 'eth1'
+    placement_id: 'MLOM'
+    placement_uplink: 0
+    placement_pcilink: 0
+    switchid: 'A'
+    order: 1
+    vlan: 'OCP_Ceph'
+  - name: 'eth2'
+    placement_id: 'MLOM'
+    placement_uplink: 1
+    placement_pcilink: 0
+    switchid: 'A'
+    order: 2
+    vlan: 'OCP_Ceph'
+  - name: 'eth3'
+    placement_id: 'MLOM'
+    placement_uplink: 0
+    placement_pcilink: 0
+    switchid: 'B'
+    order: 3
+    vlan: 'Ceph_Storage'
+  - name: 'eth4'
+    placement_id: 'MLOM'
+    placement_uplink: 1
+    placement_pcilink: 0
+    switchid: 'B'
+    order: 4
+    vlan: 'Ceph_Storage'
+
+# Server Configuration - vNIC OCP
+ocp_vnic_list:
+  - name: 'eth5'
+    placement_id: 'MLOM'
+    placement_uplink: 0
+    placement_pcilink: 0
+    switchid: 'A'
+    order: 0
+    vlan: 'Management'
+  - name: 'eth6'
+    placement_id: 'MLOM'
+    placement_uplink: 0
+    placement_pcilink: 0
+    switchid: 'A'
+    order: 1
+    vlan: 'OCP_Ceph'
+  - name: 'eth7'
+    placement_id: 'MLOM'
+    placement_uplink: 1
+    placement_pcilink: 0
+    switchid: 'A'
+    order: 2
+    vlan: 'OCP_Ceph'
+  - name: 'eth8'
+    placement_id: 'MLOM'
+    placement_uplink: 1
+    placement_pcilink: 0
+    switchid: 'B'
+    order: 3
+    vlan: 'VMware_NetApp'
+  - name: 'eth9'
+    placement_id: 'MLOM'
+    placement_uplink: 1
+    placement_pcilink: 0
+    switchid: 'B'
+    order: 4
+    vlan: 'VMware_NetApp'
+  - name: 'eth10'
+    placement_id: 'MLOM'
+    placement_uplink: 1
+    placement_pcilink: 0
+    switchid: 'B'
+    order: 5
+    vlan: 'VMware_vMotion'
+  - name: 'eth11'
+    placement_id: 'MLOM'
+    placement_uplink: 1
+    placement_pcilink: 0
+    switchid: 'B'
+    order: 6
+    vlan: 'VMware_vMotion'
+
+# Server PowerCycle
+power_device: 'CIMC_vMedia'
+
+# Temporary file for gathering Moids
+filepath_server: '/tmp/inventory_server_moid.yml'
+filepath_chassis: '/tmp/inventory_chassis_moid.yml'
+
+###############################################################################
+#
+# VMware / VMware / VMware / VMware / VMware / VMware / VMware / VMware
+#
+##############################################################################
+
+# Login vCenter
+vcenter_hostname: 'ocpceph-vc7.ocpceph.local'
+vcenter_username: 'administrator@vsphere.local'
+vcenter_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63623232366137646462666636396663623134383431316561656538323266643166376333383136
+          6362666636306434383563653266346133633066346265350a323635323638376336363266616637
+          65383739616361316533363636323439613734376631336663313439303830653533383635353662
+          3638343331346634620a396463613262313237613036633732623037643562326439396238396464
+          6239
+
+# Create DC
+vcenter_dc: 'OCP-Ceph'
+vcenter_cluster: 'OCP-X-Series'
+
+# Create DVS
+dvs_name: 'App_DVS1'
+dvs_version: '7.0.2'
+dvs_mtu: 9000
+dvs_uplink: '2'
+dvs_protocol: 'lldp'
+dvs_operation: 'both'
+
+# Create DVS Portgroup
+portgroup_name: 'vMotion'
+portgroup_id: '0'
+dvs_ports: '120'
+active_uplinks:
+  - 'Uplink 1'
+  - 'Uplink 2'
+
+# Login for ESXi host
+esxi_username: 'root'
+esxi_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63623232366137646462666636396663623134383431316561656538323266643166376333383136
+          6362666636306434383563653266346133633066346265350a323635323638376336363266616637
+          65383739616361316533363636323439613734376631336663313439303830653533383635353662
+          3638343331346634620a396463613262313237613036633732623037643562326439396238396464
+          6239
+
+# Add vSwitch for OCP to ESXi
+ocp_vmnic1: 'vmnic1'
+ocp_vmnic2: 'vmnic2'
+
+# Add vSwitch for NetApp NFS to ESXi
+netapp_vmnic1: 'vmnic3'
+netapp_vmnic2: 'vmnic4'
+
+# DVS Uplinks
+dv_uplink1: 'vmnic5'
+dv_uplink2: 'vmnic6'
+
+# Add VMkernel for OCP
+vswitch_ocp: 'vSwitch1'
+vswitch_port_ocp: 'OCP'
+vswitch_netmask: '255.255.255.0'
+vswitch_stack: 'default'
+vmk_ocp_list:
+  -  vswitch_ocp_ip: '10.1.72.107'
+  -  vswitch_ocp_ip: '10.1.72.108'
+  -  vswitch_ocp_ip: '10.1.72.109'
+
+# Add VMkernel for NetApp NFS
+vswitch_netapp: 'vSwitch2'
+vswitch_port_netapp: 'NetApp_NFS'
+vmk_netapp_list:
+  - vswitch_netapp_ip: '192.168.30.97'
+  - vswitch_netapp_ip: '192.168.30.98'
+  - vswitch_netapp_ip: '192.168.30.99'
+
+# Add ESXi DVS VMKernel
+dvs_vmk_list:
+  - portgroup_vmotion: 'vMotion'
+    ip_vmotion: '192.168.33.97'
+    netmask: '255.255.255.0'
+    stack_vmotion: 'vmotion'
+  - portgroup_vmotion: 'vMotion'
+    ip_vmotion: '192.168.33.98'
+    netmask: '255.255.255.0'
+    stack_vmotion: 'vmotion'
+  - portgroup_vmotion: 'vMotion'
+    ip_vmotion: '192.168.33.99'
+    netmask: '255.255.255.0'
+    stack_vmotion: 'vmotion'
+
+# Add NFS Datastore
+datastore_name: 'NetApp_NFS'
+nfs_datastore_type: 'nfs'
+nfs_lif_ip: '192.168.30.101'
+datastore_path: 'infra_datastore'
+
+# Update ESXi Network Driver
+nenic_offline_bundle_url: "http://10.81.72.229/vmware/Cisco-nenic_1.0.35.0-1OEM.670.0.0.8169922-offline_bundle-17305880.zip"
+nenic_filename: "Cisco-nenic_1.0.35.0-1OEM.670.0.0.8169922-offline_bundle-17305880.zip"
+
+
+###############################################################################
+#
+# Ceph / Ceph / Ceph / Ceph / Ceph / Ceph / Ceph / Ceph / Ceph / Ceph / Ceph
+#
+##############################################################################
+# Global cache directory for saving temporary files
+glocaltemp: /tmp
+local_temp: "{{ glocaltemp }}"
+debug_mode: true
+auth_user: "{{ ansible_ssh_user }}"
+
+# RH Subscription Variables
+activationkey: 'Ceph'
+orgkey: '7597615'
+poolid: '8a85f9a1787e66f70178a1d421f82e3b'
+
+# RH Ceph Repositories for all Ceph Nodes
+base_os: 'rhel-8-for-x86_64-baseos-rpms'
+appstream: 'rhel-8-for-x86_64-appstream-rpms'
+
+# RH Ceph Repositories for Admin Node
+ceph_tools: 'rhceph-4-tools-for-rhel-8-x86_64-rpms'
+ansible_ceph: 'ansible-2.9-for-rhel-8-x86_64-rpms'
+
+# Ansible User
+ansible_admin_user: 'admin'
+ansible_admin_passwd: '$6$7IFxPgvAuwqfHwST$kgDrPYafECFytM3vi7Uxa96TioZpcxaiIrKUhIXs9fjg8ufZS2sTB1eCTBfoWK4FGTeBVdAzQCm8XURGi8RI21'

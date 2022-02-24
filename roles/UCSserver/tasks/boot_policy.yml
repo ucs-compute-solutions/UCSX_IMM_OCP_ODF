@@ -1,0 +1,57 @@
+---
+################################################################################
+#
+# Title:        boot_policy.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+# Description:  Configure Storage Policy in Intersight
+#
+# Variables:    boot_policy_name = Name of boot policy
+#               vd_name = Name of local disk
+#               vmedia_name = Name of vMedia
+#
+# Modules:      boot/PrecisionPolicies
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/cisco/intersight/index.html
+#
+################################################################################
+
+- name: "Configure Boot Policy"
+  vars:
+    api_info: &api_info
+      api_private_key: "{{ api_private_key }}"
+      api_key_id: "{{ api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /boot/PrecisionPolicies
+    query_params:
+      $filter: "Name eq '{{ boot_policy_name }}'"
+    api_body: {
+      "Name": "{{ boot_policy_name }}",
+      "ConfiguredBootMode": "Uefi",
+      "BootDevices": [
+        {
+          "ObjectType": "boot.LocalDisk",
+          "Enabled": true,
+          "Name": "{{ vd_name }}",
+          "Slot": "MSTOR-RAID"
+        },
+        {
+          "ObjectType": "boot.VirtualMedia",
+          "Enabled": true,
+          "Name": "{{ vmedia_name }}",
+          "Subtype": "cimc-mapped-dvd"
+        }
+      ],
+      "EnforceUefiSecureBoot": false,
+      "Organization": {
+        "Moid": "{{ org_resp.api_response.Moid }}"
+      }
+    }
+  tags: boot_order
+  register: boot_policy_resp
+  run_once: true
+  delegate_to: localhost

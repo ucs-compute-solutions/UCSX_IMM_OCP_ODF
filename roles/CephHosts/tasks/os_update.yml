@@ -1,0 +1,22 @@
+---
+################################################################################
+#
+# Title:        os_update.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Update RHEL 8
+#
+# Variables:    
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Upgrade all Nodes
+- name: Upgrade all packages
+  dnf:
+    name: "*"
+    state: latest
+  when: "'Ceph_Hosts' in group_names"

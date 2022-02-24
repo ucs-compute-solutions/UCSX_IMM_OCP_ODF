@@ -1,0 +1,38 @@
+---
+################################################################################
+#
+# Title:        add_sshkey_ceph_osd.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Add Ceph User admin Public Key to OSD Nodes
+#
+# Variables:    ansible_admin_user = Ansible user
+#               SSHadminDIR = ssh dirctory of Ceph user admin
+#               glocaltemp = Directory /tmp
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Copy id_rsa.pub from admin host to alternate location
+- name: Set authorized key in alternate location
+  ansible.posix.authorized_key:
+    key: "{{ lookup('file', '{{ SSHadminDIR }}/id_rsa.pub') }}"
+    path: "{{ glocaltemp }}/authorized_keys"
+    manage_dir: False
+    user: admin
+  delegate_to: localhost
+  run_once: true
+
+# Copy admin authorized_keys to all Ceph OSD nodes
+- name: Copy authorized_keys file to all hosts
+  copy:
+    src: "{{ glocaltemp }}/authorized_keys"
+    dest: /home/{{ ansible_admin_user }}/.ssh/
+    owner: "{{ ansible_admin_user }}"
+    group: "{{ ansible_admin_user }}"
+    mode: '0600'
+    force: yes
+  when: "'Ceph' in group_names"

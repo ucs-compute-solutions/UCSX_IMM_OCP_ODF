@@ -1,0 +1,25 @@
+################################################################################
+#
+# Title:        config
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+#
+# Description:  Example config file for RHCS 4
+#
+################################################################################
+
+Host node1
+  Hostname cephosd1
+  User admin
+Host node2
+  Hostname cephosd2
+  User admin
+Host node3
+  Hostname cephosd3
+  User admin
+Host node4
+  Hostname cephosd4
+  User admin
+Host node5
+  Hostname cephadm
+  User admin

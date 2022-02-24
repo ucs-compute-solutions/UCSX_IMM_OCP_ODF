@@ -1,0 +1,35 @@
+---
+################################################################################
+#
+# Title:        add_esxi_nfs_datastore.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Add NFS Datastore to each ESXi host
+#
+# Variables:    inventory_hostname = Host name of the ESXi server
+#               esxi_username = ESXi username
+#               esxi_password = ESXi password
+#               datastore_name = Name of the datastore
+#               datastore_type = Type of datastore
+#               nfs_lif_ip = IP of nfs LIF
+#               datastore_path = NFS path to mount
+#
+# Modules:      vmware_host_datastore
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: Add NFS datastore to each host
+  community.vmware.vmware_host_datastore:
+    hostname: '{{ inventory_hostname }}'
+    username: '{{ esxi_username }}'
+    password: '{{ esxi_password }}'
+    esxi_hostname: '{{ inventory_hostname }}'
+    datastore_name: '{{ datastore_name }}'
+    datastore_type: '{{ nfs_datastore_type }}'
+    nfs_server: '{{ nfs_lif_ip }}'
+    nfs_path: '/{{ datastore_path }}'
+    validate_certs: no
+    state: present
+  delegate_to: localhost

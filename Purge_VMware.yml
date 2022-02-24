@@ -1,0 +1,21 @@
+---
+################################################################################
+#
+# Title:        Purge_VMware.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+#
+# Description:  Playbook for purging vSphere 7 environment
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: Purge VMware vSphere
+  hosts: ESXi_Hosts
+  connection: local
+  collections:
+    - community.vmware
+  gather_facts: false
+  roles:
+    - role: Purge_vCenter

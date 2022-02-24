@@ -1,0 +1,18 @@
+---
+################################################################################
+#
+# Title:        Setup_Ceph_Hosts.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+#
+# Description:  Playbook for preparing hosts for Ceph deployment
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+- name: Setup Ceph Environment
+  hosts: Ceph
+  gather_facts: false
+  roles:
+    - role: CephHosts

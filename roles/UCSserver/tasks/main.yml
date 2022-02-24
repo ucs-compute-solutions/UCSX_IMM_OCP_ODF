@@ -1,0 +1,130 @@
+---
+################################################################################
+#
+# Title:        main.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+#
+# Description:  Role for setting up UCS X210c M6 Blades in Intersight
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/cisco/intersight/index.html
+#
+################################################################################
+
+# Get the Organization Moid used by all profiles and policies
+- name: "Get Organization {{ ucs_org }} Moid"
+  vars:
+    api_info: &api_info
+      api_private_key: "{{ api_private_key }}"
+      api_key_id: "{{ api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /organization/Organizations
+    query_params:
+      $filter: "Name eq '{{ ucs_org }}'"
+  register: org_resp
+  delegate_to: localhost
+  tags: always
+  no_log: true
+  run_once: true
+
+# Gather Facts for Setup
+- include: gather_facts.yml
+
+# Setup QoS Policy
+- include: qos_policy.yml
+
+# Setup Ethernet Adapter Policy
+- include: eth_adapter_policy.yml
+
+# Setup Ethernet Network Control Policy
+- include: eth_network_control.yml
+
+# Setup VLAN Policies
+- include: eth_network_group_policy.yml
+
+# Setup vNIC Adapter Policy
+- include: vnic_adapter_policy.yml
+
+# Setup Storage Policy
+- include: storage_policy.yml
+
+# Setup Boot Policy
+- include: boot_policy.yml
+
+# Setup vMedia Ceph Policy
+- include: vmedia_ceph_policy.yml
+  loop_control:
+    label: "{{ item.name }}"
+  loop: "{{ vmedia_ceph_list }}"
+  when: vmedia_ceph_list is defined
+  run_once: true
+
+# Setup vMedia OCP Policy
+- include: vmedia_ocp_policy.yml
+  loop_control:
+    label: "{{ item.name }}"
+  loop: "{{ vmedia_ocp_list }}"
+  when: vmedia_ocp_list is defined
+  run_once: true
+
+# Setup LAN Connectivity Policy
+- include: lan_connectivity_policy.yml
+
+# Setup vNIC Interfaces for Ceph
+- include: eth_if_ceph.yml
+  loop_control:
+    label: "{{ item.name }}"
+  loop: "{{ ceph_vnic_list }}"
+  when: ceph_vnic_list is defined
+  run_once: true
+
+# Setup vNIC Interfaces for OCP
+- include: eth_if_ocp.yml
+  loop_control:
+    label: "{{ item.name }}"
+  loop: "{{ ocp_vnic_list }}"
+  when: ocp_vnic_list is defined
+  run_once: true
+
+# Create/Update Ceph Server Profiles
+- include: server_profile_assign_ceph.yml
+
+# Wait for Ceph Profiles getting assigned
+- name: Wait for Ceph Profile assignment
+  pause:
+    minutes: 1
+  when: configure_ucs_ceph == 'true'
+
+# Create/Update OCP Server Profiles
+- include: server_profile_assign_ocp.yml
+
+# Wait for OCP Profiles getting assigned
+- name: Wait for OCP Profile assignment
+  pause:
+    minutes: 1
+  when: configure_ucs_ocp == 'true'
+
+# Deploy Ceph Server Profiles
+- include: server_profile_deploy_ceph.yml
+
+# Wait for Ceph Profiles getting deployed
+- name: Wait for Ceph Profile deployment
+  pause:
+    minutes: 10
+  when: configure_ucs_ceph == 'true'
+
+# Deploy OCP Server Profiles
+- include: server_profile_deploy_ocp.yml
+
+# Wait for OCP Profiles getting deployed
+- name: Wait for OCP Profile deployment
+  pause:
+    minutes: 10
+  when: configure_ucs_ocp == 'true'
+
+# Power On all Blades
+- include: server_poweron.yml

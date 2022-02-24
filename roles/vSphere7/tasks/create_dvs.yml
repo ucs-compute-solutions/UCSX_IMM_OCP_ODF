@@ -1,0 +1,39 @@
+---
+################################################################################
+#
+# Title:        create_dvs.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-10
+# Description:  Create Distributed Switch under vCenter
+#
+# Variables:    vcenter_hostname = FQDN or IP of vCenter
+#               vcenter_username = vCenter username
+#               vcenter_password = vCenter password
+#               vcenter_dc = vCenter datacenter name
+#               dvs_name = Distributed vSwitch name
+#               dvs_version = Version of Distributed vSwitch
+#               dvs_mtu = MTU size of Distributed vSwitch
+#               dvs_uplink = Number of Uplinks
+#               dvs_protocol = Link discovery protocol to be used
+#               dvs_operation = Discovery operation
+#
+# Modules:      vmware_dvsswitch
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: vCenter vDS creation
+  community.vmware.vmware_dvswitch:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter_name: "{{ vcenter_dc }}"
+    switch_name: "{{ dvs_name }}"
+    version: "{{ dvs_version }}"
+    mtu: "{{ dvs_mtu }}"
+    uplink_quantity: "{{ dvs_uplink }}"
+    discovery_protocol: "{{ dvs_protocol }}"
+    discovery_operation: "{{ dvs_operation }}"
+    state: present

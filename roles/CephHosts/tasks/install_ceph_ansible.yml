@@ -1,0 +1,23 @@
+---
+################################################################################
+#
+# Title:        install_ceph_ansible.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Install Ceph Ansible on Ceph admin node
+#
+# Variables:
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Install Ceph Ansible on Admin Host
+- name: Install Ceph Ansible
+  ansible.builtin.package:
+    name: ceph-ansible
+    state: present
+  delegate_to: localhost
+  run_once: true

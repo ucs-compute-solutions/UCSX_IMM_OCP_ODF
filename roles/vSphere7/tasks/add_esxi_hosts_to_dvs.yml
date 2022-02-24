@@ -1,0 +1,59 @@
+---
+################################################################################
+#
+# Title:        add_esxi_hosts_to_dvs.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Add ESXi Host to DVS
+#
+# Variables:    vcenter_hostname = FQDN or IP of vCenter
+#               vcenter_username = vCenter username
+#               vcenter_password = vCenter password
+#               dvs_name = Name of DVS switch
+#               dv_uplink1 = vmnic to be used for uplink
+#               dv_uplink2 = vmnic to be used for uplink
+#
+# Modules:      vmware_dvs_host
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+#- name: Place host in maintenance mode
+#  community.vmware.vmware_maintenancemode:
+#   hostname: '{{ vcenter_hostname }}'
+#   username: '{{ vcenter_username }}'
+#   password: '{{ vcenter_password }}'
+#   validate_certs: no
+#   esxi_hostname: '{{ inventory_hostname }}'
+#   evacuate: yes
+#   timeout: 1800
+#   state: present
+#  delegate_to: localhost
+
+- name: Add host to the vDS '{{ dvs_name }}'
+  community.vmware.vmware_dvs_host:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    switch_name: '{{ dvs_name }}'
+    vmnics:
+        - '{{ dv_uplink1 }}'
+        - '{{ dv_uplink2 }}'
+    state: present
+  delegate_to: localhost
+  throttle: 1
+
+#- name: Place host in maintenance mode
+#  community.vmware.vmware_maintenancemode:
+#   hostname: '{{ vcenter_hostname }}'
+#   username: '{{ vcenter_username }}'
+#   password: '{{ vcenter_password }}'
+#   validate_certs: no
+#   esxi_hostname: '{{ inventory_hostname }}'
+#   evacuate: yes
+#   timeout: 1800
+#   state: absent
+#  delegate_to: localhost

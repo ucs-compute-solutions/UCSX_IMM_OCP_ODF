@@ -1,0 +1,27 @@
+---
+################################################################################
+#
+# Title:        copy_config_file.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Copy Ceph config file to Ceph admin host
+#
+# Variables:    ansible_admin_user = Ansible user
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+---
+# Copy config file for user admin
+- name: Copy admin Config file
+  copy:
+    src: files/config
+    dest: /home/{{ ansible_admin_user }}/.ssh/config
+    owner: "{{ ansible_admin_user }}"
+    group: "{{ ansible_admin_user }}"
+    mode: '0600'
+  delegate_to: localhost
+  run_once: true

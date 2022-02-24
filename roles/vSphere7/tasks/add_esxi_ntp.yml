@@ -1,0 +1,40 @@
+---
+################################################################################
+#
+# Title:        add_esxi_ntp.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-10
+# Description:  Configure, add or remove NTP servers from an ESXi host
+#
+# Variables:    inventory_hostname = Host name of the ESXi server
+#               esxi_username = ESXi username
+#               esxi_password = ESXi password
+#               ntp_servers = IP or FQDN of NTP server(s)
+#
+# Modules:      vmware_host_ntp
+#               vmware_host_service_manager
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: Configure ESXi NTP server
+  community.vmware.vmware_host_ntp:
+    hostname: '{{ inventory_hostname }}'
+    username: '{{ esxi_username }}'
+    password: '{{ esxi_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    ntp_servers: '{{ ntp_servers }}'
+  delegate_to: localhost
+
+- name: Start ESXi ntpd for the hosts
+  community.vmware.vmware_host_service_manager:
+    hostname: '{{ inventory_hostname }}'
+    username: '{{ esxi_username }}'
+    password: '{{ esxi_password }}'
+    validate_certs: no
+    esxi_hostname: '{{ inventory_hostname }}'
+    service_name: ntpd
+    service_policy: on
+  delegate_to: localhost

@@ -1,0 +1,28 @@
+---
+################################################################################
+#
+# Title:        rh_subscribe.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Subscribe to Red Hat
+#
+# Variables:    activationkey = Key to activate subscription
+#               orgkey = Organization key
+#               poolid = Pool to subscribe to
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Subscribe to Red Hat and activate RH Ceph Storage
+- name: Subscribe to Red Hat and activate RH Ceph Storage
+  community.general.redhat_subscription:
+    state: present
+    activationkey: "{{ activationkey }}"
+    org_id: "{{ orgkey }}"
+    pool_ids: "{{ poolid }}"
+#    force_register: yes
+  when: "'Ceph_Hosts' in group_names"
+  throttle: 1

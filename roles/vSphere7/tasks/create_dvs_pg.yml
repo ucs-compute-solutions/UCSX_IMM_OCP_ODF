@@ -1,0 +1,40 @@
+---
+################################################################################
+#
+# Title:        create_dvs_pg.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-10
+# Description:  Create Portgroup under Distributed Switch in vCenter
+#
+# Variables:    vcenter_hostname = FQDN or IP of vCenter
+#               vcenter_username = vCenter username
+#               vcenter_password = vCenter password
+#               vcenter_dc = vCenter datacenter name
+#               dvs_name = Distributed vSwitch name
+#               portgroup_name = Name of the portgroup
+#               dvs_ports = The number of ports the portgroup should contain
+#               portgroup_id = The VLAN ID that should be configured with the
+#                              portgroup
+#               active_uplinks = List of active uplinks used for load balancing
+#
+# Modules:      vmware_dvs_portgroup
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: vCenter vDS Portgroup Creation
+  community.vmware.vmware_dvs_portgroup:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    switch_name: "{{ dvs_name }}"
+    portgroup_name: "{{ portgroup_name }}"
+    portgroup_type: earlyBinding
+    num_ports: "{{ dvs_ports }}"
+    vlan_id: "{{ portgroup_id }}"
+    state: present
+    teaming_policy:
+      active_uplinks: "{{ active_uplinks }}"
+  run_once: true

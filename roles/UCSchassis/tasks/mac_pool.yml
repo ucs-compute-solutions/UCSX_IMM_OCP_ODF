@@ -1,0 +1,47 @@
+---
+################################################################################
+#
+# Title:        mac_pool.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+# Description:  Configure MAC Pool in Intersight
+#
+# Variables:    mac_pool_name = Name of the MAC pool
+#               mac_pool_block_from = MAC starting address
+#               mac_pool_block_size = Size of MAC pool
+#
+# Modules:      macpool/Pools
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/cisco/intersight/index.html
+#
+################################################################################
+
+- name: "Configure MAC Pool"
+  vars:
+    api_info: &api_info
+      api_private_key: "{{ api_private_key }}"
+      api_key_id: "{{ api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /macpool/Pools
+    query_params:
+      $filter: "Name eq '{{ mac_pool_name }}'"
+    api_body: {
+      "Name": "{{ mac_pool_name }}",
+      "AssignmentOrder": "default",
+      "MacBlocks": [{
+          "From": "{{ mac_pool_block_from }}",
+          "Size": "{{ mac_pool_block_size }}"
+      }],
+      "Organization": {
+        "Moid": "{{ org_resp.api_response.Moid }}"
+      }
+    }
+
+  tags: mac_pool
+  register: mac_pool_resp
+  run_once: true
+  delegate_to: localhost

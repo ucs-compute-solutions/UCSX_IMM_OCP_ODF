@@ -1,0 +1,22 @@
+---
+################################################################################
+#
+# Title:        copy_proxy.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Copy /etc/environment from Admin host
+#
+# Variables:    
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Copy Proxy Environment file to all hosts
+- name: Copy Proxy Environment file to all hosts
+  copy:
+    src: /etc/environment
+    dest: /etc
+  when: "'Ceph_Hosts' in group_names"

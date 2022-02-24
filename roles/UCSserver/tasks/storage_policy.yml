@@ -1,0 +1,47 @@
+---
+################################################################################
+#
+# Title:        storage_policy.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+# Description:  Configure Storage Policy in Intersight
+#
+# Variables:    storage_policy_name = Name of storage policy
+#               unused_disk_state = Jbod or UnconfiguredGood disk
+#               use_jbod = Use Jbod or not for virtual disk
+#
+# Modules:      storage/StoragePolicies
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/cisco/intersight/index.html
+#
+################################################################################
+
+- name: "Configure Storage Policy"
+  vars:
+    api_info: &api_info
+      api_private_key: "{{ api_private_key }}"
+      api_key_id: "{{ api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  intersight_rest_api:
+    <<: *api_info
+    resource_path: /storage/StoragePolicies
+    query_params:
+      $filter: "Name eq '{{ storage_policy_name }}'"
+    api_body: {
+      "Name": "{{ storage_policy_name }}",
+      "M2VirtualDrive": {
+        "ControllerSlot": "{{ storage_controller_slot }}",
+        "Enable": true
+      },
+      "UnusedDisksState": "{{ unused_disk_state }}",
+      "UseJbodForVdCreation": true,
+      "Organization": {
+        "Moid": "{{ org_resp.api_response.Moid }}"
+      }
+    }
+  tags: storage
+  register: storage_policy_resp
+  run_once: true
+  delegate_to: localhost

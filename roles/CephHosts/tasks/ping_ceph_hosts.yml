@@ -1,0 +1,22 @@
+---
+################################################################################
+#
+# Title:        ping_ceph_hosts.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Ping all Ceph nodes
+#
+# Variables:    ansible_admin_user = Ansible user
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+- name: Ping all Ceph Nodes
+  become: yes
+  become_user: "{{ ansible_admin_user }}"
+  action: ping
+  delegate_to: localhost
+  when: "'Ceph' in group_names"

@@ -1,0 +1,23 @@
+---
+################################################################################
+#
+# Title:        Setup_VMware.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-08
+#
+# Description:  Playbook for configuring vSphere 7 for RH OCP
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/community/vmware/index.html#plugins-in-community-vmware
+#
+################################################################################
+
+- name: Setup vSphere 7 Environment
+  hosts: ESXi_Hosts
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  connection: local
+  collections:
+    - community.vmware
+  gather_facts: false
+  roles:
+    - role: vSphere7

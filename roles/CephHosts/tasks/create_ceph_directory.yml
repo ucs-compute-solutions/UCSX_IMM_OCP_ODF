@@ -1,0 +1,25 @@
+---
+################################################################################
+#
+# Title:        create_ceph_directory.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+# Description:  Create Ceph Ansible Key directory on Ceph admin node
+#
+# Variables:    ansible_admin_user = Ansible user
+#
+# Modules:
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Create ceph-ansible-keys directory
+- name: Create ceph-ansible-keys directory
+  file:
+    path: /home/{{ ansible_admin_user }}/ceph-ansible-keys
+    owner: "{{ ansible_admin_user }}"
+    group: "{{ ansible_admin_user }}"
+    state: directory
+  delegate_to: localhost
+  run_once: true

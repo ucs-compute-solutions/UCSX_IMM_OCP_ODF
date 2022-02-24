@@ -1,0 +1,57 @@
+---
+################################################################################
+#
+# Title:        main.yml
+# Author:       Olli Walsdorf
+# Date:         2022-02-11
+#
+# Description:  Role for preparig Ceph Hosts
+#
+# URLs:         https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugins-in-ansible-builtin
+#
+################################################################################
+
+# Setup ssh access for root
+- include: ssh_root.yml
+
+# Copy Proxy Environment file
+- include: copy_proxy.yml
+
+# Subscribe to RH and enable Ceph Subscription
+- include: rh_subscribe.yml
+
+# Enable specific Repositories
+- include: rh_repository.yml
+
+# Update RHEL OS
+- include: os_update.yml
+
+# Add Ceph User
+- include: add_ceph_user.yml
+
+# Add Ceph User to sudoers
+- include: add_ceph_sudoers.yml
+
+#  Create SSH key for Ceph User
+- include: sshkey_ceph_user.yml
+
+# Add Ceph User SSH key to all OSD Nodes
+- include: add_sshkey_ceph_osd.yml
+
+# Create Config file for Ceph user
+- include: copy_config_file.yml
+
+# Install Ceph Ansible on Admin Host
+- include: install_ceph_ansible.yml
+
+# Copy Ceph hosts file
+- include: copy_hosts_file.yml
+
+# Create ceph-ansible-keys directory on admin host
+- include: create_ceph_directory.yml
+
+# Ping all Ceph nodes
+- include: ping_ceph_hosts.yml
+
+# Copy Ceph files
+- include: copy_ceph_files.yml
