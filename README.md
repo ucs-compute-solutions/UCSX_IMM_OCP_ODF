@@ -5,7 +5,7 @@ The complete solution is described in the CVD [LINK]
 
 In this architecture, we have OCP (Red Hat OpenShift) with ODF (Red Hat OpenShift Data Foundation) deployed on Cisco UCS X-Series with Cisco Intersight and Intersight Ansible. In the CVD we automatically have setup seven Cisco UCS X210c M6 blades with Intersight Ansible, simplifying the process of orchestrating a cloud native environment. Three blades were deployed with vSphere 7, running OCP. Four blades were deployed with RHEL 8 and RHCS 4 (Red Hat Ceph Storage), connecting via ODF to OCP as persistent block storage. This can be adjusted by changing the inventory file.
 
-![image](https://github.com/ucs-compute-solutions/UCSX_IMM_OCP_ODF/blob/main/files/pictures/solution_overview.png)
+![image](https://github.com/ucs-compute-solutions/UCSX_IMM_OCP_ODF/files/pictures/solution_overview.png)
 
 The deployment of the solution is foremost done through Ansible automation. The full deployment of Cisco UCS X-Series is done through Intersight Ansible automation including an installation of vSphere and RHEL with preconfigured kickstart files. It shows the simplicity of the deployment from day 1 and integrates the configuration of vSphere as preparation for OCP and the configuration of RHEL as preparation for Ceph. The further deployment of OCP and Ceph including ODF is done through the OCP installer and the Ceph Ansible installer.
 
@@ -17,7 +17,7 @@ The solution setup consists of multiple parts. The high-level flow of the soluti
 2.	Configure vSphere 7 with Ansible and deploy OCP
 3.	Configure RHEL 8 with Ansible, deploy RHCS and connect RHCS with ODF
 
-![image](https://github.com/ucs-compute-solutions/UCSX_IMM_OCP_ODF/blob/main/files/pictures/solution_flow.png)
+![image](https://github.com/ucs-compute-solutions/UCSX_IMM_OCP_ODF/blob/pictures/solution_flow.png)
 
 ## Configuration Prerequisites
 The solution doesn’t start from day 0 instead requires a few hardware and software configurations, which are listed below:
@@ -38,7 +38,7 @@ Both VM machines for providing HTTP and for OCP installation/configuration/admin
 
 The following diagram illustrates the topology overview.
 
-![image](https://github.com/ucs-compute-solutions/UCSX_IMM_OCP_ODF/blob/main/files/pictures/topology.png)
+![image](https://github.com/ucs-compute-solutions/UCSX_IMM_OCP_ODF/blob/pictures/topology.png)
 
 ## Deployment Flow
 The deployment of the solution contains various steps. The infrastructure deployment of the Cisco UCS X-Series is based on Intersight Ansible. The configuration of VMware vSphere, the preparation of the Ceph nodes, and the installation of RHCS is based on Ansible as well.
