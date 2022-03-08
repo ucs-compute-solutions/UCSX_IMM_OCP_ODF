@@ -17,7 +17,7 @@ The solution setup consists of multiple parts. The high-level flow of the soluti
 2.	Configure vSphere 7 with Ansible and deploy OCP
 3.	Configure RHEL 8 with Ansible, deploy RHCS and connect RHCS with ODF
 
-![image](https://https://github.com/ucs-compute-solutions/UCSX_IMM_OCP_ODF/blob/master/files/pictures/solution_flow.png)
+![image](https://https://https://github.com/ucs-compute-solutions/UCSX_IMM_OCP_ODF/blob/master/files/pictures/solution_flow.png)
 
 ## Configuration Prerequisites
 The solution doesn’t start from day 0 instead requires a few hardware and software configurations, which are listed below:
