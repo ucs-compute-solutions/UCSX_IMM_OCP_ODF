@@ -1,7 +1,7 @@
 # OpenShift with Red Hat Ceph Storage on Cisco UCS X-Series
 Ansible Framework to automate full deployment of Red Hat OpenShift on VMware vSphere with Red Hat OpenShift Data Foundation and Red Hat Ceph Storage as external storage on Cisco UCS X-Series connected to Cisco Intersight.
 
-The complete solution is described in the CVD [LINK]
+The complete solution is described in the CVD https://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/UCS_CVDs/ucs_xseries_ocp_ci.html
 
 In this architecture, we have OCP (Red Hat OpenShift) with ODF (Red Hat OpenShift Data Foundation) deployed on Cisco UCS X-Series with Cisco Intersight and Intersight Ansible. In the CVD we automatically have setup seven Cisco UCS X210c M6 blades with Intersight Ansible, simplifying the process of orchestrating a cloud native environment. Three blades were deployed with vSphere 7, running OCP. Four blades were deployed with RHEL 8 and RHCS 4 (Red Hat Ceph Storage), connecting via ODF to OCP as persistent block storage. This can be adjusted by changing the inventory file.
 
